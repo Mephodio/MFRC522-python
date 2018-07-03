@@ -33,7 +33,10 @@ while True:
       MIFAREReader.MFRC522_SelectTag(uid)
 
       # Dump the data
-      MIFAREReader.MFRC522_DumpClassic1K(key, uid)
+      try:
+        MIFAREReader.MFRC522_DumpClassic1K(key, uid)
+      except MFRC522.AuthorizationError:
+        print('Auth Error')
 
       # Stop
       MIFAREReader.MFRC522_StopCrypto1()

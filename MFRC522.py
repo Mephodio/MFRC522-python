@@ -5,7 +5,10 @@ import RPi.GPIO as GPIO
 import spi
 import signal
 import time
-  
+
+class AuthorizationError(Exception):
+  pass
+
 class MFRC522:
   NRSTPD = 22
   
@@ -318,9 +321,9 @@ class MFRC522:
 
     # Check if an error occurred
     if not(status == self.MI_OK):
-      print("AUTH ERROR!!")
+      raise AuthorizationError("AUTH ERROR!!")
     if not (self.Read_MFRC522(self.Status2Reg) & 0x08) != 0:
-      print("AUTH ERROR(status2reg & 0x08) != 0")
+      raise AuthorizationError("AUTH ERROR(status2reg & 0x08) != 0")
 
     # Return the status
     return status
@@ -377,7 +380,7 @@ class MFRC522:
         if status == self.MI_OK:
             self.MFRC522_Read(i)
         else:
-            print("Authentication error")
+            raise AuthorizationError("Authentication error")
         i = i+1
 
   def MFRC522_Init(self):

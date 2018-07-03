@@ -1,25 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf8 -*-
-#
-#    Copyright 2014,2018 Mario Gomez <mario.gomez@teubi.co>
-#
-#    This file is part of MFRC522-Python
-#    MFRC522-Python is a simple Python implementation for
-#    the MFRC522 NFC Card Reader for the Raspberry Pi.
-#
-#    MFRC522-Python is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Lesser General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    MFRC522-Python is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Lesser General Public License for more details.
-#
-#    You should have received a copy of the GNU Lesser General Public License
-#    along with MFRC522-Python.  If not, see <http://www.gnu.org/licenses/>.
-#
 
 import RPi.GPIO as GPIO
 import spi
@@ -307,7 +287,7 @@ class MFRC522:
     (status, backData, backLen) = self.MFRC522_ToCard(self.PCD_TRANSCEIVE, buf)
     
     if (status == self.MI_OK) and (backLen == 0x18):
-      print "Size: " + str(backData[0])
+      print("Size: {}".format(backData[0]))
       return    backData[0]
     else:
       return 0
@@ -338,9 +318,9 @@ class MFRC522:
 
     # Check if an error occurred
     if not(status == self.MI_OK):
-      print "AUTH ERROR!!"
+      print("AUTH ERROR!!")
     if not (self.Read_MFRC522(self.Status2Reg) & 0x08) != 0:
-      print "AUTH ERROR(status2reg & 0x08) != 0"
+      print("AUTH ERROR(status2reg & 0x08) != 0")
 
     # Return the status
     return status
@@ -357,10 +337,10 @@ class MFRC522:
     recvData.append(pOut[1])
     (status, backData, backLen) = self.MFRC522_ToCard(self.PCD_TRANSCEIVE, recvData)
     if not(status == self.MI_OK):
-      print "Error while reading!"
+      print("Error while reading!")
     i = 0
     if len(backData) == 16:
-      print "Sector "+str(blockAddr)+" "+str(backData)
+      print("Sector {:<3} [{}]".format(blockAddr, ''.join("{:>4}".format(e) for e in backData)))
   
   def MFRC522_Write(self, blockAddr, writeData):
     buff = []
@@ -373,7 +353,7 @@ class MFRC522:
     if not(status == self.MI_OK) or not(backLen == 4) or not((backData[0] & 0x0F) == 0x0A):
         status = self.MI_ERR
     
-    print "%s backdata &0x0F == 0x0A %s" % (backLen, backData[0]&0x0F)
+    print("{} backdata &0x0F == 0x0A {}".format(backLen, backData[0]&0x0F))
     if status == self.MI_OK:
         i = 0
         buf = []
@@ -385,9 +365,9 @@ class MFRC522:
         buf.append(crc[1])
         (status, backData, backLen) = self.MFRC522_ToCard(self.PCD_TRANSCEIVE,buf)
         if not(status == self.MI_OK) or not(backLen == 4) or not((backData[0] & 0x0F) == 0x0A):
-            print "Error while writing"
+            print("Error while writing")
         if status == self.MI_OK:
-            print "Data written"
+            print("Data written")
 
   def MFRC522_DumpClassic1K(self, key, uid):
     i = 0
@@ -397,7 +377,7 @@ class MFRC522:
         if status == self.MI_OK:
             self.MFRC522_Read(i)
         else:
-            print "Authentication error"
+            print("Authentication error")
         i = i+1
 
   def MFRC522_Init(self):
